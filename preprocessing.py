@@ -40,3 +40,26 @@ X = X.drop(columns = "tweet_created")
 
 #Remove tweet location because it is not relevant or quanitifiable
 X = X.drop(columns = "tweet_location")
+
+#Cleaning remaining data
+#Remove NaN values from user_timezone
+timezones = X.groupby("user_timezone").count()
+X["user_timezone"] = X["user_timezone"].fillna("nt")
+
+#Description column (twitter bio)
+#Getting length of each description
+X["descLen"] = X["description"].str.len()
+
+#Removing nan values (setting to 0)
+X["descLen"] = X["descLen"].fillna(0)
+
+#Twitter handle ("name")
+#Getting length of each name
+X["nameLen"] = X["name"].str.len()
+
+#Should be no need to replace NaN values but do it just in case
+X["nameLen"] = X["nameLen"].fillna(0)
+
+
+
+
