@@ -9,6 +9,14 @@ import numpy as np
 import matplotlib.pyplot as plt
 import pandas as pd
 
+from datetime import date, datetime
+
+
+
+def calculate_age(born):
+    today = date.today()
+    return today.year - born.year - ((today.month, today.day) < (born.month, born.day))
+
 #Function created to clean up dataset
 def CleanUp(dataset):
     # Removing these features because they were not taken from twitter
@@ -41,10 +49,18 @@ X = X.drop(columns = "tweet_created")
 #Remove tweet location because it is not relevant or quanitifiable
 X = X.drop(columns = "tweet_location")
 
+#Remove retweet_count because of insufficient data / data seems impossible
+X = X.drop(columns = "retweet_count")
+
+#Remove user timezone because majority of the data is NaN
+X = X.drop(columns = "user_timezone")
+
+"""
 #Cleaning remaining data
 #Remove NaN values from user_timezone
 timezones = X.groupby("user_timezone").count()
 X["user_timezone"] = X["user_timezone"].fillna("nt")
+"""
 
 #Description column (twitter bio)
 #Getting length of each description
@@ -59,6 +75,18 @@ X["nameLen"] = X["name"].str.len()
 
 #Should be no need to replace NaN values but do it just in case
 X["nameLen"] = X["nameLen"].fillna(0)
+
+#colorS = X.groupby("user_timezone").count()
+###################################################################
+#           CLEAN UP END
+###################################################################
+
+#Convert 'created' columns to age
+now = pd.Timestamp(datetime.now())
+
+X['created'] = pd.to_datetime(X['created'], format='%m/%d/%y %H:%M')    # 1
+X['created'] = X['created'].where(X['created'] < now, X['created'] -  np.timedelta64(100, 'Y'))   # 2
+X['created'] = (now - X['created']).astype('<m8[Y]') 
 
 
 
