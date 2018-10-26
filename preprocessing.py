@@ -62,6 +62,9 @@ timezones = X.groupby("user_timezone").count()
 X["user_timezone"] = X["user_timezone"].fillna("nt")
 """
 
+#Removing nan values (setting to 0)
+X["description"] = X["description"].fillna("")
+
 #Description column (twitter bio)
 #Getting length of each description
 X["descLen"] = X["description"].str.len()
@@ -76,6 +79,7 @@ X["nameLen"] = X["name"].str.len()
 #Should be no need to replace NaN values but do it just in case
 X["nameLen"] = X["nameLen"].fillna(0)
 
+
 #colorS = X.groupby("user_timezone").count()
 ###################################################################
 #           CLEAN UP END
@@ -88,6 +92,14 @@ X['created'] = pd.to_datetime(X['created'], format='%m/%d/%y %H:%M')    # 1
 X['created'] = X['created'].where(X['created'] < now, X['created'] -  np.timedelta64(100, 'Y'))   # 2
 X['created'] = (now - X['created']).astype('<m8[Y]') 
 
+#Find the count of hashtags in description
+X["hashtag_count"] = X["description"].str.count("#")
+ 
+#Find social media reference is present or not
+X["social_media"] = X["description"].str.contains("@|Instagram")
 
+#Find whether an http link is present or not
+X["http_link"] = X["description"].str.contains("http")
+ 
 
 
