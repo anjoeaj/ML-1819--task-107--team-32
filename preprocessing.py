@@ -61,7 +61,7 @@ X = X.drop(columns = "user_timezone")
 timezones = X.groupby("user_timezone").count()
 X["user_timezone"] = X["user_timezone"].fillna("nt")
 """
-
+timezones = X.groupby("sidebar_color").count()
 #Removing nan values (setting to 0)
 X["description"] = X["description"].fillna("")
 
@@ -72,24 +72,17 @@ X["descLen"] = X["description"].str.len()
 #Removing nan values (setting to 0)
 X["descLen"] = X["descLen"].fillna(0)
 
-#Twitter handle ("name")
-#Getting length of each name
-X["nameLen"] = X["name"].str.len()
-
-#Should be no need to replace NaN values but do it just in case
-X["nameLen"] = X["nameLen"].fillna(0)
-
 
 #colorS = X.groupby("user_timezone").count()
 ###################################################################
-#           CLEAN UP END
+#############           CLEAN UP END                ###############
 ###################################################################
 
 #Convert 'created' columns to age
 now = pd.Timestamp(datetime.now())
 
-X['created'] = pd.to_datetime(X['created'], format='%m/%d/%y %H:%M')    # 1
-X['created'] = X['created'].where(X['created'] < now, X['created'] -  np.timedelta64(100, 'Y'))   # 2
+X['created'] = pd.to_datetime(X['created'], format='%m/%d/%y %H:%M')
+X['created'] = X['created'].where(X['created'] < now, X['created'] -  np.timedelta64(100, 'Y'))   
 X['created'] = (now - X['created']).astype('<m8[Y]') 
 
 #Find the count of hashtags in description
@@ -108,3 +101,15 @@ favs = favs.reshape(1, -1)
 min_max_scaler = MinMaxScaler()
 scaled = min_max_scaler.fit_transform(favs)
 normalized = pd.DataFrame(scaled)
+
+#Twitter handle ("name")
+#Getting length of each name
+X["nameLen"] = X["name"].str.len()
+
+#Should be no need to replace NaN values but do it just in case
+X["nameLen"] = X["nameLen"].fillna(0)
+
+#Identify whether default link color is used
+#1 for default color, 0 otherwise
+X["uses_default_link_color"] = (X["link_color"] == "0084B4").astype(int)
+
