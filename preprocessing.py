@@ -101,5 +101,10 @@ X["social_media"] = X["description"].str.contains("@|Instagram")
 #Find whether an http link is present or not
 X["http_link"] = X["description"].str.contains("http")
  
-
-
+#Normalize data
+from sklearn.preprocessing import MinMaxScaler
+favs = X["fav_number"].values.astype(float)
+favs = favs.reshape(1, -1)
+min_max_scaler = MinMaxScaler()
+scaled = min_max_scaler.fit_transform(favs)
+normalized = pd.DataFrame(scaled)
