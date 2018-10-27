@@ -1,22 +1,13 @@
 from sklearn.linear_model import LogisticRegression
 import numpy as np
 import pandas as pd
-from patsy import dmatrices
-from sklearn.linear_model import LogisticRegression
-from sklearn.model_selection import train_test_split
-from sklearn import metrics
-from sklearn.model_selection import cross_val_score
 
 df = pd.read_csv("ML-1819--task-107--team-32_cleanedUpData.csv", ',')
-#print(df)
+print(df)
 Y = df.ix[:,1]
 X = df.ix[:, 2:-1]
 # print(X, Y)
-
-#df["gender"] = np.where(df["gender"] == "male" , 1, 0)
-print(list(df))
-#Y, X = dmatrices('gender ~ rate_marriage + age + yrs_married + children + \
- #                 religious + educ + C(occupation) + C(occupation_husb)', dta, return_type="dataframe")
+ 
 
 
 

@@ -40,11 +40,14 @@ valid = ["male", "female"]
 dataset = dataset[dataset['gender'].isin(valid)]
 dataset = dataset.reset_index(drop=True)
 
-# x will be our dataset
+# y will be the gender of the account
+#y = dataset.iloc[:, 0].values
+
+# x will be our modifiers
 X = dataset
 
 # Removing 'tweet coords' because majority are nan values
-X = X.drop(columns="tweet_coord")
+X = dataset.drop(columns="tweet_coord")
 
 # Removing 'tweet ID' because values are random
 X = X.drop(columns="tweet_id")
@@ -70,6 +73,7 @@ X["description"] = X["description"].fillna("")
 
 
 # Handling categorical/text data
+
 # Description column (twitter bio)
 # Getting length (word count) of each description
 X["descLen"] = X["description"].str.count('\w+')
@@ -135,14 +139,7 @@ X["nameLen"] = normalizeCol("nameLen")
 X["tweet_length"] = normalizeCol("tweet_length")
 X["created"] = normalizeCol("created")
 
-# Convert remaining categorical data 
-# 'True', 'False', to 1, 0
-X.tweet_has_link = X.tweet_has_link.astype(int)
-
-# 'Male, 'Female' to 1, 0
-X["gender"] = np.where(X["gender"] == "male", 1, 0)
-
-# Drop categorical data that has been processed
+# Drop categorical data that had been processed
 X = X.drop(columns="description")
 X = X.drop(columns="link_color")
 X = X.drop(columns="name")
