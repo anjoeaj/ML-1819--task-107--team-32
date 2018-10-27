@@ -5,25 +5,23 @@ ML Twitter Data Preprocessing
 
 # Importing the libraries
 import numpy as np
-import matplotlib.pyplot as plt
 import pandas as pd
 
 from datetime import date, datetime
 
+# Determine how many years old each account is
 def calculate_age(born):
     today = date.today()
     return today.year - born.year - ((today.month, today.day) < (born.month, born.day))
 
-
-# Function created to clean up dataset
+# Function created to remove data not taken from twitter
 def CleanUp(dataset):
-    # Removing these features because they were not taken from twitter
     dataset = dataset.drop(columns=["_unit_id", "_golden", "_unit_state", "_trusted_judgments", "_last_judgment_at"])
     dataset = dataset.drop(columns=["gender:confidence", "profile_yn", "profile_yn:confidence", "gender_gold"])
     dataset = dataset.drop(columns=["profile_yn_gold", "profileimage"])
     return dataset
 
-# Normalize data
+# Functino to normalize values in data columns
 def normalizeCol(colName):
     colVals = X[colName].values.astype(float)
     norm = colVals/np.linalg.norm(colVals)
@@ -32,8 +30,15 @@ def normalizeCol(colName):
 
 # Importing the dataset
 dataset = pd.read_csv('twitter.csv', encoding="ISO-8859-1")
+
 # Cleaning the dataset (creators of dataset added features for their specific model)
 dataset = CleanUp(dataset)
+
+# Gender data contains: male, female, unknown, brand
+# Remove brand and unknown rows
+valid = ["male", "female"]
+dataset = dataset[dataset['gender'].isin(valid)]
+dataset = dataset.reset_index(drop=True)
 
 # y will be the gender of the account
 y = dataset.iloc[:, 0].values
@@ -50,45 +55,45 @@ X = X.drop(columns="tweet_id")
 # Removing 'tweet time' because all tweets were captured within a two minute span
 X = X.drop(columns="tweet_created")
 
-# Remove tweet location because it is not relevant or quanitifiable
+# Removing tweet location because it is not relevant or quanitifiable
 X = X.drop(columns="tweet_location")
 
-# Remove retweet_count because of insufficient data / data seems impossible
+# Removing retweet_count because of insufficient data / data seems implausible
 X = X.drop(columns="retweet_count")
 
-# Remove user timezone because majority of the data is NaN
+# Removing user timezone because majority of the data is NaN
 X = X.drop(columns="user_timezone")
 
-# Remove sidebar color because default is unknown and feature is deprecated
+# Removing sidebar color because default is unknown and feature is deprecated
 X = X.drop(columns="sidebar_color")
 
-# Removing nan values (setting to 0)
+
+# In description columns (twitter bio), replace Nan with empty string
 X["description"] = X["description"].fillna("")
+
+
+# Handling categorical/text data
 
 # Description column (twitter bio)
 # Getting length (word count) of each description
 X["descLen"] = X["description"].str.count('\w+')
 
-# Removing nan values (setting to 0)
-X["descLen"] = X["descLen"].fillna(0)
-
-
-
 # Convert 'created' columns to age
 now = pd.Timestamp(datetime.now())
-
 X['created'] = pd.to_datetime(X['created'], format='%m/%d/%y %H:%M')
 X['created'] = X['created'].where(X['created'] < now, X['created'] - np.timedelta64(100, 'Y'))
 X['created'] = (now - X['created']).astype('<m8[Y]')
 
-# Find the count of hashtags in description
+# Find the number of hashtags used in description (twitter bio)
 X["des_hashtag_count"] = X["description"].str.count("#")
 
-# has mentioned any social in description
+# Has user mentioned provided a link in description(bio)
 # lower case for convenience
 lower_des = X["description"].str.lower()
 bool_list = []
-lst = ['sc', "snap", "insta", "ig", "http", "https", "fb", "facebook", ".com"]
+# List of other social media platforms/links and abbreviations of them
+lst = ['sc:', "sc ", "snap", "insta", "ig:", "ig ", "fb:", "fb ", "facebook", "http", "https", ".com"]
+# Need to check for word rather than letters (using reg expressions)
 for i in range(len(lower_des)):
     if (any(sub in lower_des[i] for sub in lst)):
         bool_list.append(1)
@@ -108,11 +113,14 @@ X["nameLen"] = X["nameLen"].fillna(0)
 # 1 for default color, 0 otherwise
 X["uses_default_link_color"] = (X["link_color"] == "0084B4").astype(int)
 
-# tweets
-# tagged any other accounts in the
+# Handling a random tweet taken from the profile
+# tweet length (word count)
+X["tweet_length"] = X["text"].str.count('\w+')
+
+# tagged any other accounts in the tweet
 X["num_tagged"] = X["text"].str.count('@')
 
-# number of hashtags
+# number of hashtags in the tweet
 X["tweet_hashtags"] = X["text"].str.count('#')
 
 # urls in tweets
@@ -122,11 +130,8 @@ X["shared_link"] = X["text"].str.contains('((http:|https:)//[^ \<]*[^ \<\.])')
 X["shortened_urls"] = X["text"].str.contains('https?://t\.co/\S+')
 # combine both
 X["tweet_has_link"] = X["shared_link"] | X["shortened_urls"]
-# Note!!!!!!! Later drop shared_links and shortened urls
 
-# tweet length (word count)
-X["tweet_length"] = X["text"].str.count('\w+')
-
+# Normalizing data
 X["fav_number"] = normalizeCol("fav_number")
 X["descLen"] = normalizeCol("descLen")
 X["tweet_count"] = normalizeCol("tweet_count")
