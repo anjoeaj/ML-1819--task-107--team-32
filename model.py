@@ -7,7 +7,7 @@ print(df)
 Y = df.ix[:,1]
 X = df.ix[:, 2:-1]
 # print(X, Y)
-
+ 
 
 
 

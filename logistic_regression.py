@@ -5,7 +5,7 @@ import pandas as pd
 from patsy import dmatrices
 
 
-#Read twitter data
+#Read twitter data 
 dta = pd.read_csv("ML-1819--task-107--team-32_cleanedUpData.csv", ',')
 
 #Split columns to X and Y
