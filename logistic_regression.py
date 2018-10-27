@@ -1,20 +1,30 @@
-# -*- coding: utf-8 -*-
-"""
-ML Twitter Data - Algorithms - Logistic Regression
-
-"""
-
+from sklearn.linear_model import LogisticRegression
 import numpy as np
 import pandas as pd
-import statsmodels.api as sm
-import matplotlib.pyplot as plt
+
 from patsy import dmatrices
-from sklearn.linear_model import LogisticRegression
-from sklearn.cross_validation import train_test_split
-from sklearn import metrics
-from sklearn.cross_validation import cross_val_score
 
 
-dataset = pd.read_csv('ML-1819--task-107--team-32_cleanedUpData.csv', encoding="ISO-8859-1")
+#Read twitter data
+dta = pd.read_csv("ML-1819--task-107--team-32_cleanedUpData.csv", ',')
 
-X=dataset[:,0]
+#Split columns to X and Y
+Y = dta.ix[:,1]
+X = dta.ix[:, 2:-1]
+
+#Reformat data
+y, X = dmatrices('gender ~ created + fav_number + tweet_count + descLen + des_hashtag_count + nameLen + tweet_length + '
+                'num_tagged + tweet_hashtags + C(has_mentioned_other_bio) + C(uses_default_link_color) + '
+                'C(tweet_has_link)', dta, return_type="dataframe")
+
+Y = np.ravel(Y)
+
+
+# instantiate a logistic regression model, and fit with X and y
+model = LogisticRegression()
+model = model.fit(X, Y)
+
+# check the accuracy on the training set
+print(model.score(X, Y))
+
+print(y.mean())
