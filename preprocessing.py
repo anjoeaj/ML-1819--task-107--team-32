@@ -126,16 +126,8 @@ X["shared_link"] = X["text"].str.contains('((http:|https:)//[^ \<]*[^ \<\.])')
 X["shortened_urls"] = X["text"].str.contains('https?://t\.co/\S+')
 # combine both
 X["tweet_has_link"] = X["shared_link"] | X["shortened_urls"]
-<<<<<<< HEAD
 
 # Normalizing data
-=======
-# Note!!!!!!! Later drop shared_links and shortened urls
-
-# tweet length (word count)
-X["tweet_length"] = X["text"].str.count('\w+')
-
->>>>>>> f1e95d49d902e04baf924580d01ac0274bcceda0
 X["fav_number"] = normalizeCol("fav_number")
 X["descLen"] = normalizeCol("descLen")
 X["tweet_count"] = normalizeCol("tweet_count")
@@ -152,9 +144,6 @@ X = X.drop(columns="shortened_urls")
 X = X.drop(columns="shared_link")
 
 #Save as csv file
-<<<<<<< HEAD
-X.to_csv("Processed data.csv", ",")
-=======
 X.to_csv("ML-1819--task-107--team-32_cleanedUpData.csv", ",")
->>>>>>> f1e95d49d902e04baf924580d01ac0274bcceda0
+
 
