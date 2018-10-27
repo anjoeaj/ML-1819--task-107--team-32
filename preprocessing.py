@@ -153,4 +153,3 @@ train, test = train_test_split(dataset, test_size = 0.25, random_state = 0)
 #Save as csv file
 train.to_csv("ML-1819--task-107--team-32_cleanedUpDataTrainingSet.csv", ",")
 test.to_csv("ML-1819--task-107--team-32_cleanedUpDataTestSet.csv", ",")
-
