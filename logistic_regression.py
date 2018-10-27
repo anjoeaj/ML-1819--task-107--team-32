@@ -14,7 +14,7 @@ dta = pd.read_csv("ML-1819--task-107--team-32_cleanedUpData.csv", ',')
 Y = dta.ix[:,1]
 X = dta.ix[:, 2:-1]
 
-#sReformat data
+# Reformat data
 Y, X = dmatrices('gender ~ created + fav_number + tweet_count + descLen + des_hashtag_count + nameLen + tweet_length + '
                 'num_tagged + tweet_hashtags + C(has_mentioned_other_bio) + C(uses_default_link_color) + '
                 'C(tweet_has_link)', dta, return_type="dataframe")
