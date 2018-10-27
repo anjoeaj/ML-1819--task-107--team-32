@@ -17,3 +17,4 @@ from sklearn.cross_validation import cross_val_score
 
 dataset = pd.read_csv('ML-1819--task-107--team-32_cleanedUpData.csv', encoding="ISO-8859-1")
 
+X=dataset[:,0]
