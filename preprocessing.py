@@ -36,18 +36,18 @@ dataset = CleanUp(dataset)
 
 # Gender data contains: male, female, unknown, brand
 # Remove brand and unknown rows
-valid = ["male", "female"]
-dataset = dataset[dataset['gender'].isin(valid)]
-dataset = dataset.reset_index(drop=True)
-
-# y will be the gender of the account
-y = dataset.iloc[:, 0].values
-
-# x will be our modifiers
-X = dataset.drop(columns="gender")
+#valid = ["male", "female"]
+#dataset = dataset[dataset['gender'].isin(valid)]
+#dataset = dataset.reset_index(drop=True)
+#
+## y will be the gender of the account
+#y = dataset.iloc[:, 0].values
+#
+## x will be our modifiers
+#X = dataset.drop(columns="gender")
 
 # Removing 'tweet coords' because majority are nan values
-X = X.drop(columns="tweet_coord")
+X = dataset.drop(columns="tweet_coord")
 
 # Removing 'tweet ID' because values are random
 X = X.drop(columns="tweet_id")
