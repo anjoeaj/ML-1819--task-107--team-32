@@ -9,6 +9,7 @@ import matplotlib.pyplot as plt
 import pandas as pd
 
 from datetime import date, datetime
+import re
 
 
 def calculate_age(born):
@@ -65,8 +66,8 @@ timezones = X.groupby("sidebar_color").count()
 X["description"] = X["description"].fillna("")
 
 # Description column (twitter bio)
-# Getting length of each description
-X["descLen"] = X["description"].str.len()
+# Getting length (word count) of each description
+X["descLen"] = X["description"].str.count('\w+')
 
 # Removing nan values (setting to 0)
 X["descLen"] = X["descLen"].fillna(0)
@@ -129,4 +130,21 @@ X["uses_default_link_color"] = (X["link_color"] == "0084B4").astype(int)
 # tagged any other accounts in the
 X["num_tagged"] = X["text"].str.count('@')
 
+# number of hashtags
+X["tweet_hashtags"] = X["text"].str.count('#')
+
+# urls in tweets
 lower_tweets = X["text"].str.lower()
+X["shared_link"] = X["text"].str.contains('((http:|https:)//[^ \<]*[^ \<\.])')
+# double check for shorten urls
+X["shortened_urls"] = X["text"].str.contains('https?://t\.co/\S+')
+# combine both
+X["tweet_has_link"] = X["shared_link"] | X["shortened_urls"]
+
+# Note!!!!!!! Later drop shared_links and shortened urls
+
+# tweet length (word count)
+X["tweet length"] = X["text"].str.count('\w+')
+
+#print(X["tweet length"].iloc[0])
+
