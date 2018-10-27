@@ -5,7 +5,6 @@ ML Twitter Data Preprocessing
 
 # Importing the libraries
 import numpy as np
-import matplotlib.pyplot as plt
 import pandas as pd
 
 from datetime import date, datetime
@@ -34,6 +33,12 @@ dataset = pd.read_csv('twitter.csv', encoding="ISO-8859-1")
 
 # Cleaning the dataset (creators of dataset added features for their specific model)
 dataset = CleanUp(dataset)
+
+# Gender data contains: male, female, unknown, brand
+# Remove brand and unknown rows
+valid = ["male", "female"]
+dataset = dataset[dataset['gender'].isin(valid)]
+dataset = dataset.reset_index(drop=True)
 
 # y will be the gender of the account
 y = dataset.iloc[:, 0].values
@@ -72,7 +77,6 @@ X["description"] = X["description"].fillna("")
 # Description column (twitter bio)
 # Getting length (word count) of each description
 X["descLen"] = X["description"].str.count('\w+')
-
 
 # Convert 'created' columns to age
 now = pd.Timestamp(datetime.now())
@@ -145,5 +149,4 @@ X = X.drop(columns="shared_link")
 
 #Save as csv file
 X.to_csv("ML-1819--task-107--team-32_cleanedUpData.csv", ",")
-
 
