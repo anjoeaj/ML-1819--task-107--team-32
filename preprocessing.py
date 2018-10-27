@@ -127,7 +127,6 @@ X["tweet_has_link"] = X["shared_link"] | X["shortened_urls"]
 # tweet length (word count)
 X["tweet_length"] = X["text"].str.count('\w+')
 
-
 X["fav_number"] = normalizeCol("fav_number")
 X["descLen"] = normalizeCol("descLen")
 X["tweet_count"] = normalizeCol("tweet_count")
@@ -144,5 +143,5 @@ X = X.drop(columns="shortened_urls")
 X = X.drop(columns="shared_link")
 
 #Save as csv file
-#X.to_csv("D:\Users \Cjmcm\Working Files\GitHub\ML-1819--task-107--team-32", ",")
+X.to_csv("ML-1819--task-107--team-32_cleanedUpData.csv", ",")
 
