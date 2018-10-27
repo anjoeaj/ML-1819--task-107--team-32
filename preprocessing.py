@@ -9,8 +9,6 @@ import matplotlib.pyplot as plt
 import pandas as pd
 
 from datetime import date, datetime
-import re
-
 
 def calculate_age(born):
     today = date.today()
@@ -24,6 +22,12 @@ def CleanUp(dataset):
     dataset = dataset.drop(columns=["gender:confidence", "profile_yn", "profile_yn:confidence", "gender_gold"])
     dataset = dataset.drop(columns=["profile_yn_gold", "profileimage"])
     return dataset
+
+# Normalize data
+def normalizeCol(colName):
+    colVals = X[colName].values.astype(float)
+    norm = colVals/np.linalg.norm(colVals)
+    return norm
 
 
 # Importing the dataset
@@ -55,13 +59,9 @@ X = X.drop(columns="retweet_count")
 # Remove user timezone because majority of the data is NaN
 X = X.drop(columns="user_timezone")
 
-"""
-#Cleaning remaining data
-#Remove NaN values from user_timezone
-timezones = X.groupby("user_timezone").count()
-X["user_timezone"] = X["user_timezone"].fillna("nt")
-"""
-timezones = X.groupby("sidebar_color").count()
+# Remove sidebar color because default is unknown and feature is deprecated
+X = X.drop(columns="sidebar_color")
+
 # Removing nan values (setting to 0)
 X["description"] = X["description"].fillna("")
 
@@ -72,10 +72,7 @@ X["descLen"] = X["description"].str.count('\w+')
 # Removing nan values (setting to 0)
 X["descLen"] = X["descLen"].fillna(0)
 
-# colorS = X.groupby("user_timezone").count()
-###################################################################
-#############           CLEAN UP END                ###############
-###################################################################
+
 
 # Convert 'created' columns to age
 now = pd.Timestamp(datetime.now())
@@ -86,12 +83,6 @@ X['created'] = (now - X['created']).astype('<m8[Y]')
 
 # Find the count of hashtags in description
 X["des_hashtag_count"] = X["description"].str.count("#")
-
-# Find social media reference is present or not
-#X["social_media"] = X["description"].str.contains("@|Instagram")
-
-# Find whether an http link is present or not
-#X["http_link"] = X["description"].str.contains("http")
 
 # has mentioned any social in description
 # lower case for convenience
@@ -105,15 +96,6 @@ for i in range(len(lower_des)):
         bool_list.append(0)
 
 X["has_mentioned_other_bio"] = bool_list
-
-# Normalize data
-from sklearn.preprocessing import MinMaxScaler
-
-favs = X["fav_number"].values.astype(float)
-favs = favs.reshape(1, -1)
-min_max_scaler = MinMaxScaler()
-scaled = min_max_scaler.fit_transform(favs)
-normalized = pd.DataFrame(scaled)
 
 # Twitter handle ("name")
 # Getting length of each name
@@ -140,11 +122,27 @@ X["shared_link"] = X["text"].str.contains('((http:|https:)//[^ \<]*[^ \<\.])')
 X["shortened_urls"] = X["text"].str.contains('https?://t\.co/\S+')
 # combine both
 X["tweet_has_link"] = X["shared_link"] | X["shortened_urls"]
-
 # Note!!!!!!! Later drop shared_links and shortened urls
 
 # tweet length (word count)
-X["tweet length"] = X["text"].str.count('\w+')
+X["tweet_length"] = X["text"].str.count('\w+')
 
-#print(X["tweet length"].iloc[0])
+
+X["fav_number"] = normalizeCol("fav_number")
+X["descLen"] = normalizeCol("descLen")
+X["tweet_count"] = normalizeCol("tweet_count")
+X["nameLen"] = normalizeCol("nameLen")
+X["tweet_length"] = normalizeCol("tweet_length")
+X["created"] = normalizeCol("created")
+
+# Drop categorical data that had been processed
+X = X.drop(columns="description")
+X = X.drop(columns="link_color")
+X = X.drop(columns="name")
+X = X.drop(columns="text")
+X = X.drop(columns="shortened_urls")
+X = X.drop(columns="shared_link")
+
+#Save as csv file
+#X.to_csv("D:\Users \Cjmcm\Working Files\GitHub\ML-1819--task-107--team-32", ",")
 
