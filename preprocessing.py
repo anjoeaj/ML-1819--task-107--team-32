@@ -116,7 +116,7 @@ dataset["num_tagged"] = dataset["text"].str.count('@')
 # number of hashtags in the tweet
 dataset["tweet_hashtags"] = dataset["text"].str.count('#')
 
-# urls in tweets
+# urls in tweets ///NOTE////// ARTICLE SAID MEN MORE LIKELY TO SHARE HTTPS LINK, WOMEN TO SHARE 'BARE LINK'
 lower_tweets = dataset["text"].str.lower()
 dataset["shared_link"] = dataset["text"].str.contains('((http:|https:)//[^ \<]*[^ \<\.])')
 # double check for shorten urls
