@@ -28,14 +28,19 @@ y_train = np.ravel(y_train)
 
 
 # instantiate a logistic regression model, and fit with training data for X and y
+
 modelPoly = svm.SVC(kernel = 'poly', degree = 3)
 modelPoly = modelPoly.fit(X_train, y_train)
 
 # check the accuracy on the training set
 print(modelPoly.score(X_train, y_train))
 
-print(y_train.mean())
+#print(y_train.mean())
 
+modelLinear = svm.SVC(kernel= 'rbf', degree= 5)
+modelLinear = modelPoly.fit(X_train, y_train)
+
+print(modelLinear.score(X_train, y_train))
 # Test model on test data
 #Y_pred = model.predict(X_test)
 #print(model.score(X_test, Y_test))
