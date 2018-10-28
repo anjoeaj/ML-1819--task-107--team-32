@@ -1,10 +1,13 @@
 import pandas as pd
 import numpy as np
 import xgboost as xgb
-from sklearn.model_selection import train_test_split
 from sklearn.metrics import accuracy_score
 from matplotlib import pyplot as plt
 import graphviz
+from datetime import datetime
+from sklearn.model_selection import RandomizedSearchCV, GridSearchCV
+from sklearn.metrics import roc_auc_score
+from sklearn.model_selection import StratifiedKFold
 
 # create test and training data
 seed = 5
@@ -42,22 +45,33 @@ params = {
     # regularization coefficients
     "alpha" : 2e-05,
     'lambda' : 10
-#X_train, X_test, y_train, y_test = train_test_split(X, Y, test_size=test_size, random_state=seed)
 }
 
+params1 = {
+# logistic model
+  'objective' : 'binary:logistic',
+# logloss
+ 'eval_metric' : 'logloss',
+# learning rate
+  'eta' : [0.05, 0.1, 0.15],
+    #depth of tree
+  "max_depth" : [4, 5, 6],
+    # min sum of weights
+    # should be high enough to prevent over fitting
+    # but not too high for over fitting
+    'min_child_weight' : [8,10,11],
+    # the min loss value require to split
+    'gamma' : [0.5, 0.7,0.8, 1.2],
+    # fraction of observations to be included in each tree
+    # generally varies from 0.5-1
+    'subsample' : [0.55, 0.75, 0.95],
+    # fraction of column to be randomly sample in each tree
+    "colsample_bytree" : [0.6,0.8,0.95],
+    # regularization coefficients
+    "alpha" : 2e-05,
+    'lambda' : 10
+}
 
-"""""
-# creating data
-model = XGBClassifier()
-#fitting data
-model.fit(X_train, Y_train)
-
-Y_pred = model.predict(X_test)
-predictions = [round(value) for value in Y_pred]
-# evaluate predictions
-accuracy = accuracy_score(Y_test, predictions)
-print("Accuracy: %.2f%%" % (accuracy * 100.0))
-"""
 dtrain = xgb.DMatrix(X_train, label=Y_train)
 dtest = xgb.DMatrix(X_test, label= Y_test)
 num_rounds = 10
@@ -65,7 +79,20 @@ train = xgb.train(params=params, dtrain=dtrain, num_boost_round=num_rounds)
 
 
 # save model
-#train.save_model('001.model')
+train.save_model('001.model')
+
+# yo!!! just finding the best params
+folds = 3
+param_comb = 5
+
+clf = xgb.XGBClassifier(learning_rate=0.02, n_estimators=600, objective='binary:logistic',
+                    silent=True, nthread=1)
+skf = StratifiedKFold(n_splits=folds, shuffle = True, random_state = 1001)
+random_search = RandomizedSearchCV(clf, params1, n_iter=param_comb, scoring='roc_auc', n_jobs=4,
+                                   cv=skf.split(X_train,Y_test), verbose=3, random_state=1001 )
+#random_search.fit(X_train, Y_test)
+print(random_search)
+
 
 Y_predict = train.predict(dtest, ntree_limit=train.best_ntree_limit)
 
@@ -74,8 +101,8 @@ predictions = np.where(Y_predict<0.49,0,1)
 accuracy = accuracy_score(Y_test, predictions)
 print("Accuracy: %.2f%%" % (accuracy * 100.0))
 
-xgb.plot_importance(train)
 xgb.plot_tree(train, num_trees=4)
 xgb.to_graphviz(train, num_trees=4)
+xgb.plot_importance(train)
 plt.show()
 
