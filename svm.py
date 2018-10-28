@@ -22,6 +22,7 @@ y_train, X_train = dmatrices('gender ~ created + fav_number + tweet_count + desc
 y_train = np.ravel(y_train)
 
 
+<<<<<<< HEAD
 from sklearn import svm
 from sklearn import model_selection
 # instantiate an SVM model, and fit with training data for X and y
@@ -34,6 +35,12 @@ from sklearn import model_selection
                    {'kernel':['sigmoid'], 'gamma': ['auto', 0.001, 0.01, 0.1, 0, 1, 10, 100, 1000], 'C': [ 0.01, 0.1, 1, 10, 100, 1000]},
                    {'kernel':['poly'], 'gamma': ['auto', 0.001, 0.01, 0.1, 0, 1, 10, 100, 1000], 'C': [ 0.01, 0.1, 1, 10, 100, 1000], 'degree': [2, 3, 4]}]
 """
+=======
+# instantiate a logistic regression model, and fit with training data for X and y
+
+modelPoly = svm.SVC(kernel = 'poly', degree = 3)
+modelPoly = modelPoly.fit(X_train, y_train)
+>>>>>>> cc0e8209f31a91c694269020edceff1d9d44cd75
 
 #Smaller parameter lists were used, here is an example
 """modelSVM = svm.SVC()
@@ -49,7 +56,15 @@ modelSVM = svm.SVC(C = 10,  kernel = "rbf", gamma = 1000)
 modelSVM.fit(X_train, y_train)
 print(modelSVM.score(X_train, y_train))
 
+<<<<<<< HEAD
+=======
+#print(y_train.mean())
 
+modelLinear = svm.SVC(kernel= 'rbf', degree= 5)
+modelLinear = modelPoly.fit(X_train, y_train)
+>>>>>>> cc0e8209f31a91c694269020edceff1d9d44cd75
+
+print(modelLinear.score(X_train, y_train))
 # Test model on test data
 #Read twitter test data
 dtest = pd.read_csv("ML-1819--task-107--team-32_cleanedUpDataTestSet.csv", ',')
