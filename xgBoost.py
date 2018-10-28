@@ -89,9 +89,9 @@ clf = xgb.XGBClassifier(learning_rate=0.02, n_estimators=600, objective='binary:
                     silent=True, nthread=1)
 skf = StratifiedKFold(n_splits=folds, shuffle = True, random_state = 1001)
 random_search = RandomizedSearchCV(clf, params1, n_iter=param_comb, scoring='roc_auc', n_jobs=4,
-                                   cv=skf.split(X_train,Y_test), verbose=3, random_state=1001 )
-#random_search.fit(X_train, Y_test)
+                                   cv=skf.split(X_train,Y_train), verbose=3, random_state=1001 )
 print(random_search)
+random_search.fit(X=X_train, y=Y_train)
 
 
 Y_predict = train.predict(dtest, ntree_limit=train.best_ntree_limit)
