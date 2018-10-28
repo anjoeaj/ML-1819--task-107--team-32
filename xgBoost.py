@@ -1,17 +1,10 @@
 import pandas as pd
 import numpy as np
-from xgboost import XGBClassifier
 import xgboost as xgb
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import accuracy_score
-
-"""""
-df = pd.read_csv("ML-1819--task-107--team-32_cleanedUpData.csv", ',')
-
-# split in X and Y
-Y = df.iloc[:, 1]
-X = df.iloc[:, 2:-1]
-"""
+from matplotlib import pyplot as plt
+import graphviz
 
 # create test and training data
 seed = 5
@@ -72,12 +65,17 @@ train = xgb.train(params=params, dtrain=dtrain, num_boost_round=num_rounds)
 
 
 # save model
-train.save_model('001.model')
+#train.save_model('001.model')
 
 Y_predict = train.predict(dtest, ntree_limit=train.best_ntree_limit)
 
-Y_predict = np.where(Y_predict<0.49,0,1)
-print(Y_predict)
-accuracy = accuracy_score(Y_test, Y_predict)
+predictions = np.where(Y_predict<0.49,0,1)
+#print(predictions)
+accuracy = accuracy_score(Y_test, predictions)
 print("Accuracy: %.2f%%" % (accuracy * 100.0))
-#xgb.plot_importance(dtrain)
+
+xgb.plot_importance(train)
+xgb.plot_tree(train, num_trees=4)
+xgb.to_graphviz(train, num_trees=4)
+plt.show()
+
