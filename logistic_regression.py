@@ -6,6 +6,7 @@ from sklearn.model_selection import train_test_split
 from sklearn import metrics
 from sklearn.model_selection import cross_val_score
 from sklearn.metrics import accuracy_score
+from sklearn.preprocessing import PolynomialFeatures
 
 
 # NOW USING A TRAIN DATA SET AND TEST DATA SET
@@ -27,6 +28,12 @@ Y_train = np.ravel(Y_train)
 
 # instantiate a logistic regression model, and fit with training data for X and y
 model = LogisticRegression(penalty = 'l2', C = 1000,random_state = 1)
+
+#add polynomial features
+poly = PolynomialFeatures(2)
+X_train = poly.fit_transform(X_train)
+# convert to be used further to linear regression
+
 model = model.fit(X_train, Y_train)
 
 
@@ -47,8 +54,11 @@ Y_test, X_test = dmatrices('gender ~ created + fav_number + tweet_count + descLe
 Y_test = np.ravel(Y_test)
 
 ##predict the accuracy with test data
+poly = PolynomialFeatures(2)
+X_test = poly.fit_transform(X_test)
 y_pred = model.predict(X_test)
 print(accuracy_score(Y_test, y_pred))
 
 #Y_pred = model.predict(X_test)
 #print(model.score(X_test, Y_test))
+
