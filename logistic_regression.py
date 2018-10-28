@@ -9,7 +9,7 @@ from sklearn.model_selection import cross_val_score
 # NOW USING A TRAIN DATA SET AND TEST DATA SET
 
 #Read twitter data 
-dta = pd.read_csv("ML-1819--task-107--team-32_cleanedUpData.csv", ',')
+dta = pd.read_csv("ML-1819--task-107--team-32_cleanedUpDataTrainingSet.csv", ',')
 
 #Split columns to X and Y
 Y_train = dta.iloc[:,1]
@@ -20,7 +20,7 @@ Y_train, X_train = dmatrices('gender ~ created + fav_number + tweet_count + desc
                 'num_tagged + tweet_hashtags + C(has_mentioned_other_bio) + C(uses_default_link_color) + '
                 'C(tweet_has_link)', dta, return_type="dataframe")
 
-Y_train = np.ravel(Y)
+Y_train = np.ravel(Y_train)
 
 
 # instantiate a logistic regression model, and fit with training data for X and y
