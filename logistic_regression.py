@@ -5,6 +5,8 @@ from patsy import dmatrices
 from sklearn.model_selection import train_test_split
 from sklearn import metrics
 from sklearn.model_selection import cross_val_score
+from sklearn.metrics import accuracy_score
+
 
 # NOW USING A TRAIN DATA SET AND TEST DATA SET
 
@@ -24,8 +26,9 @@ Y_train = np.ravel(Y_train)
 
 
 # instantiate a logistic regression model, and fit with training data for X and y
-model = LogisticRegression()
+model = LogisticRegression(penalty = 'l2', C = 1000,random_state = 1)
 model = model.fit(X_train, Y_train)
+
 
 # check the accuracy on the training set
 print(model.score(X_train, Y_train))
@@ -33,5 +36,19 @@ print(model.score(X_train, Y_train))
 print(Y_train.mean())
 
 # Test model on test data
+dta = pd.read_csv("ML-1819--task-107--team-32_cleanedUpDataTestSet.csv", ',')
+Y_test = dta.iloc[:,1]
+X_test = dta.iloc[:, 2:-1]
+Y_test, X_test = dmatrices('gender ~ created + fav_number + tweet_count + descLen + des_hashtag_count + nameLen + tweet_length + '
+                'num_tagged + tweet_hashtags + C(has_mentioned_other_bio) + C(uses_default_link_color) + '
+                'C(tweet_has_link)', dta, return_type="dataframe")
+
+#test data of prediction value to 1D array
+Y_test = np.ravel(Y_test)
+
+##predict the accuracy with test data
+y_pred = model.predict(X_test)
+print(accuracy_score(Y_test, y_pred))
+
 #Y_pred = model.predict(X_test)
 #print(model.score(X_test, Y_test))
