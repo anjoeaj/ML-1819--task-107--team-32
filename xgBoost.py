@@ -7,7 +7,7 @@ import graphviz
 from datetime import datetime
 from sklearn.model_selection import RandomizedSearchCV, GridSearchCV
 from sklearn.metrics import roc_auc_score
-from sklearn.model_selection import StratifiedKFold
+from sklearn import model_selection
 
 # create test and training data
 seed = 5
@@ -49,11 +49,8 @@ params = {
 
 params1 = {
 # logistic model
-  'objective' : 'binary:logistic',
-# logloss
- 'eval_metric' : 'logloss',
-# learning rate
-  'eta' : [0.05, 0.1, 0.15],
+  'objective' : ['binary:logistic'],
+
     #depth of tree
   "max_depth" : [4, 5, 6],
     # min sum of weights
@@ -68,8 +65,8 @@ params1 = {
     # fraction of column to be randomly sample in each tree
     "colsample_bytree" : [0.6,0.8,0.95],
     # regularization coefficients
-    "alpha" : 2e-05,
-    'lambda' : 10
+    #"alpha" : [0.00002],
+    #'lambda' : [10]
 }
 
 dtrain = xgb.DMatrix(X_train, label=Y_train)
@@ -85,13 +82,15 @@ train.save_model('001.model')
 folds = 3
 param_comb = 5
 
-clf = xgb.XGBClassifier(learning_rate=0.02, n_estimators=600, objective='binary:logistic',
+clf = xgb.XGBClassifier(learning_rate=0.02, n_estimators=600,
                     silent=True, nthread=1)
-skf = StratifiedKFold(n_splits=folds, shuffle = True, random_state = 1001)
-random_search = RandomizedSearchCV(clf, params1, n_iter=param_comb, scoring='roc_auc', n_jobs=4,
-                                   cv=skf.split(X_train,Y_train), verbose=3, random_state=1001 )
+gridsearch = model_selection.GridSearchCV(clf,params1)
+gridsearch.fit(X_train, Y_train)
+#skf = StratifiedKFold(n_splits=folds, shuffle = True, random_state = 1001)
+#random_search = RandomizedSearchCV(clf, params1, n_iter=param_comb, scoring='roc_auc', n_jobs=4,
+#                                   cv=skf.split(X_train,Y_train), verbose=3, random_state=1001 )
 print(random_search)
-random_search.fit(X=X_train, y=Y_train)
+#random_search.fit(X=X_train, y=Y_train)
 
 
 Y_predict = train.predict(dtest, ntree_limit=train.best_ntree_limit)
