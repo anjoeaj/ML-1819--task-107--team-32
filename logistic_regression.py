@@ -67,7 +67,7 @@ print(gridsearch.score)
 model = model.fit(X_train, Y_train)
 
 # check the accuracy on the training set
-print(model.score(X_train, Y_train))
+print(model.score(X_train, Y_train)) 
 
 #check mean of Y data                                                                      
 #print(Y_train.mean())
