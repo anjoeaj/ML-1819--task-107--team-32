@@ -73,13 +73,9 @@ print(model.score(X_train, Y_train))
 #print(Y_train.mean())
 
 # Test model on test data
-
 y_pred = model.predict(X_test)
 print(accuracy_score(Y_test, y_pred))
 print("---------------------------------------------------------------------") 
-
-#Y_pred = model.predict(X_test)
-#print(model.score(X_test, Y_test))
 
 
 
