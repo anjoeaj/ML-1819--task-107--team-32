@@ -9,7 +9,7 @@ import pandas as pd
 from sklearn.model_selection import train_test_split
 from datetime import date, datetime
 
-# Determine how many years old each account is
+# Determine from date of join, how many years old each account is
 def calculate_age(born):
     today = date.today()
     return today.year - born.year - ((today.month, today.day) < (born.month, born.day))
