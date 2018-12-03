@@ -17,7 +17,17 @@ from sklearn.model_selection import train_test_split
 # Importing the dataset
 dataset = pd.read_csv('twitter.csv', encoding="ISO-8859-1")
 
-dataset = dataset[['gender','name','description', 'text']]
+dataset = dataset[['gender', 'description', 'text']]
+
+# Gender data contains: male, female, unknown, brand
+# Remove brand and unknown rows
+valid = ["male", "female"]
+dataset = dataset[dataset['gender'].isin(valid)]
+dataset = dataset.reset_index(drop=True)
+
+# Count how many are male and female in dataset
+count = dataset['gender'].value_counts()
+print(count)
 
 # male = 0, female = 1
 dataset['gender'] = dataset['gender'].map({'female': 1, 'male': 0})
@@ -27,12 +37,11 @@ dataset['gender'] = dataset['gender'].map({'female': 1, 'male': 0})
 dataset['text'] = dataset['text'].str.lower()
 
 dataset['text'] = dataset['text'].str.replace(r'https?://t\.co/\S+', 
-       'SHORTENED_URL')
+       '')
 
-dataset['text'] = dataset['text'].str.replace(r"(@)(\w+)\b", "TAGGED")
+dataset['text'] = dataset['text'].str.replace(r"(@)(\w+)\b", "")
 
-dataset['text'] = dataset['text'].str.replace(r"(#)(\w+)\b", "HASHTAG")
-    
+dataset['hastag'] = dataset['text'].str.findall(r"(#)(\w+)\b")
 # Removing gibberish as well as special characters form text
 # ^[^<>]+$
 dataset['text'] = dataset['text'].str.replace(r'[^A-Za-z0-9,.\'-_? ]+', '')
