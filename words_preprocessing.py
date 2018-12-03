@@ -17,7 +17,7 @@ from sklearn.model_selection import train_test_split
 # Importing the dataset
 dataset = pd.read_csv('twitter.csv', encoding="ISO-8859-1")
 
-#dataset = dataset[['gender','name','description', 'text']]
+dataset = dataset[['gender','name','description', 'text']]
 
 # male = 0, female = 1
 dataset['gender'] = dataset['gender'].map({'female': 1, 'male': 0})
@@ -49,11 +49,12 @@ dataset['text'] = dataset['text'].str.replace('?', ' ?')
 dataset['description'] = dataset['description'].str.lower()
 
 dataset['description'] = dataset['description'].str.replace(r'https?://t\.co/\S+', 
-       'SHORTENED_URL')
+       '')
 
 dataset['description'] = dataset['description'].str.replace(r"(@)(\w+)\b", 
-       "TAGGED")
+       "")
 
+# Separate hash tags into separate column
 dataset['description'] = dataset['description'].str.replace(r"(#)(\w+)\b", 
         "HASHTAG")
 dataset['description'] = dataset['description'].fillna("Not Available")
@@ -66,8 +67,9 @@ dataset['description'] = dataset['description'].str.replace(
 train, test = train_test_split(dataset, test_size = 0.25, random_state = 0)
 
 #Save as csv file
-train.to_csv("ML-1819--task-107--team-32_cleanedUpDataTrainingSet.csv", ",")
-test.to_csv("ML-1819--task-107--team-32_cleanedUpDataTestSet.csv", ",")
+train.to_csv("words_training_dataset.csv", ",")
+test.to_csv("words_testing_dataset.csv", ",")
+dataset.to_csv("words_crossval_dataset.csv", ",")
 
 
 # Calculate the score:

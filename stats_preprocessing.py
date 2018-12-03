@@ -3,7 +3,6 @@
 ML Twitter Data Preprocessing
 """
 
-
 # Importing the libraries
 import numpy as np
 import pandas as pd
@@ -152,5 +151,6 @@ dataset = dataset.drop(columns="shared_link")
 train, test = train_test_split(dataset, test_size = 0.25, random_state = 0)
 
 #Save as csv file
-train.to_csv("ML-1819--task-107--team-32_cleanedUpDataTrainingSet.csv", ",")
-test.to_csv("ML-1819--task-107--team-32_cleanedUpDataTestSet.csv", ",")
+train.to_csv("stats_training_dataset.csv", ",")
+test.to_csv("stats_testing_dataset.csv", ",")
+dataset.to_csv("stats_crossval_dataset.csv", ",")
