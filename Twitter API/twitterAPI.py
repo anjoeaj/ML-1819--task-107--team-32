@@ -14,10 +14,10 @@ from tweepy import OAuthHandler
 
 
 
-consumer_key = "nOduyS52w0X7PaBeDPTsYlK9p"
-consumer_secret = "eiAYX2jkWVtzztO9ejyuLCLhSC8bQ1JpRICldpgg6TKr6oZ7na"
-access_token = "4528287733-Y7KOlcaaoo3vMTCd94JyWKCfWDVOAtQayrvG34S"
-access_secret = "hyIo426W4CWn8fDpnGHW2aSB9adajAvBLBYHskXO354Z9"
+consumer_key = "#"
+consumer_secret = "#"
+access_token = "#"
+access_secret = "#"
 
 class listener(StreamListener):
 
