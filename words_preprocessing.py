@@ -143,4 +143,4 @@ dataset.to_csv("words_crossval_dataset.csv", ",")
 
 # Calculate the score:
 # LSTM for sequential text(0.5) + XGBOOST for the description(0.15) 
-# + other data created previously (0.15)
+# + other data created previously (0.15
