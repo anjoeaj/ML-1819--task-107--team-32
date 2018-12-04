@@ -13,7 +13,7 @@ import pandas as pd
 from sklearn.model_selection import train_test_split
 import nltk
 lemma = nltk.wordnet.WordNetLemmatizer()
-
+from matplotlib import pyplot as plt
 #lower-case letter
 
 # Importing the dataset
@@ -44,34 +44,25 @@ dataset['text'] = dataset['text'].str.replace(r'https?://t\.co/\S+','')
 # Removing tags ('@')
 dataset['text'] = dataset['text'].str.replace(r"(@)(\w+)\b", "")
 
-#Put hastags in a separate column
+#Put hastags in a separate column (including hastags from description as well)
 dataset['hashtag'] = dataset['text'].str.findall(r"#(\w+)")+ dataset['description'].str.findall(r"#(\w+)")
         
 # Remove hashtags from original column
 dataset['text'] = dataset['text'].str.replace(r"(#)(\w+)\b", "")
        
-# Removing gibberish as well as special characters form text
-# ^[^<>]+$
-dataset['text'] = dataset['text'].str.replace(r'[^A-Za-z0-9,.\'-? ]+', '')
+# Removing non-alpha characters
+dataset['text'] = dataset['text'].str.replace("[^a-zA-Z#]", " ")
 
-# As we are going to tain a LSTM network
-# putting , as a seperate word will make more sense
-dataset['text'] = dataset['text'].str.replace(',', ' ,')
-dataset['text'] = dataset['text'].str.replace('.', ' .')
-dataset['text'] = dataset['text'].str.replace('?', ' ?')
-
+# Remove words with less than 3 letters - likely no significance       
 dataset['text'] = dataset['text'].apply(lambda x: ' '.join([w for w in x.split() if len(w)>2]))
 
-dataset['text'] = dataset['text'].apply(lambda x: x.split())
-dataset['text'].head()
+# Tokenize tweet
+tokenized_tweet = dataset['text'].apply(lambda x: x.split())
+for i in range(len(tokenized_tweet)):
+    tokenized_tweet[i] = ' '.join(tokenized_tweet[i])
+dataset['text'] = tokenized_tweet
 
-
-dataset['text'] = dataset['text'].apply(lambda x: [lemma(i) for i in x]) # stemming
-dataset['text'].head()
-for i in range(len(dataset['text'])):
-    dataset['text'][i] = ' '.join(dataset['text'][i])
-
-# Cleaning description column
+# Cleaning description column (same as above)
 dataset['description'] = dataset['description'].str.lower()
 
 dataset['description'] = dataset['description'].str.replace(r'https?://t\.co/\S+', '')
@@ -80,16 +71,28 @@ dataset['description'] = dataset['description'].str.replace(r"(@)(\w+)\b", "")
 
 dataset['description'] = dataset['description'].str.replace(r"(#)(\w+)\b", "")
 
-dataset['description'] = dataset['description'].fillna("Not Available")
+dataset['description'] = dataset['description'].fillna("")
 
-# Removing gibberish as well as some special characters form text
-dataset['description'] = dataset['description'].str.replace(r'[^A-Za-z0-9,.\'-? ]+', '')
+dataset['description'] = dataset['description'].str.replace("[^a-zA-Z#]", " ")
 
 dataset['description'] = dataset['description'].apply(lambda x: ' '.join([w for w in x.split() if len(w)>2]))
 
-dataset['description'] = dataset['description'].apply(lambda x: x.split())
-dataset['description'].head()
+# Tokenize description
+tokenized_desc = dataset['description'].apply(lambda x: x.split())
+for i in range(len(tokenized_desc)):
+    tokenized_desc[i] = ' '.join(tokenized_desc[i])
+dataset['description'] = tokenized_desc
 
+
+all_words = ' '.join([text for text in dataset['description']])
+
+from wordcloud import WordCloud
+wordcloud = WordCloud(width=800, height=500, random_state=21, max_font_size=110).generate(all_words)
+
+plt.figure(figsize=(10, 7))
+plt.imshow(wordcloud, interpolation="bilinear")
+plt.axis('off')
+plt.show()
 
 #Split data into training and test sets
 train, test = train_test_split(dataset, test_size = 0.25, random_state = 0)
