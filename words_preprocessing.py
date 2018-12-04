@@ -11,6 +11,9 @@ Created on Sat Nov 17 23:46:29 2018
 
 import pandas as pd
 from sklearn.model_selection import train_test_split
+import nltk
+lemma = nltk.wordnet.WordNetLemmatizer()
+
 #lower-case letter
 
 # Importing the dataset
@@ -49,7 +52,7 @@ dataset['text'] = dataset['text'].str.replace(r"(#)(\w+)\b", "")
        
 # Removing gibberish as well as special characters form text
 # ^[^<>]+$
-dataset['text'] = dataset['text'].str.replace(r'[^A-Za-z0-9,.\'-_? ]+', '')
+dataset['text'] = dataset['text'].str.replace(r'[^A-Za-z0-9,.\'-? ]+', '')
 
 # As we are going to tain a LSTM network
 # putting , as a seperate word will make more sense
@@ -57,7 +60,16 @@ dataset['text'] = dataset['text'].str.replace(',', ' ,')
 dataset['text'] = dataset['text'].str.replace('.', ' .')
 dataset['text'] = dataset['text'].str.replace('?', ' ?')
 
+dataset['text'] = dataset['text'].apply(lambda x: ' '.join([w for w in x.split() if len(w)>2]))
 
+dataset['text'] = dataset['text'].apply(lambda x: x.split())
+dataset['text'].head()
+
+
+dataset['text'] = dataset['text'].apply(lambda x: [lemma(i) for i in x]) # stemming
+dataset['text'].head()
+for i in range(len(dataset['text'])):
+    dataset['text'][i] = ' '.join(dataset['text'][i])
 
 # Cleaning description column
 dataset['description'] = dataset['description'].str.lower()
@@ -71,7 +83,12 @@ dataset['description'] = dataset['description'].str.replace(r"(#)(\w+)\b", "")
 dataset['description'] = dataset['description'].fillna("Not Available")
 
 # Removing gibberish as well as some special characters form text
-dataset['description'] = dataset['description'].str.replace(r'[^A-Za-z0-9,.\'-_? ]+', '')
+dataset['description'] = dataset['description'].str.replace(r'[^A-Za-z0-9,.\'-? ]+', '')
+
+dataset['description'] = dataset['description'].apply(lambda x: ' '.join([w for w in x.split() if len(w)>2]))
+
+dataset['description'] = dataset['description'].apply(lambda x: x.split())
+dataset['description'].head()
 
 
 #Split data into training and test sets
