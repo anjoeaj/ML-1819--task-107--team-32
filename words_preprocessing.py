@@ -11,7 +11,6 @@ Created on Sat Nov 17 23:46:29 2018
 
 import pandas as pd
 from sklearn.model_selection import train_test_split
-
 #lower-case letter
 
 # Importing the dataset
@@ -36,12 +35,18 @@ dataset['gender'] = dataset['gender'].map({'female': 1, 'male': 0})
 # Cleaning text column
 dataset['text'] = dataset['text'].str.lower()
 
-dataset['text'] = dataset['text'].str.replace(r'https?://t\.co/\S+', 
-       '')
+#Removing website links
+dataset['text'] = dataset['text'].str.replace(r'https?://t\.co/\S+','')
 
+# Removing tags ('@')
 dataset['text'] = dataset['text'].str.replace(r"(@)(\w+)\b", "")
 
-dataset['hastag'] = dataset['text'].str.findall(r"(#)(\w+)\b")
+#Put hastags in a separate column
+dataset['hashtag'] = dataset['text'].str.findall(r"#(\w+)")+ dataset['description'].str.findall(r"#(\w+)")
+        
+# Remove hashtags from original column
+dataset['text'] = dataset['text'].str.replace(r"(#)(\w+)\b", "")
+       
 # Removing gibberish as well as special characters form text
 # ^[^<>]+$
 dataset['text'] = dataset['text'].str.replace(r'[^A-Za-z0-9,.\'-_? ]+', '')
@@ -57,19 +62,16 @@ dataset['text'] = dataset['text'].str.replace('?', ' ?')
 # Cleaning description column
 dataset['description'] = dataset['description'].str.lower()
 
-dataset['description'] = dataset['description'].str.replace(r'https?://t\.co/\S+', 
-       '')
+dataset['description'] = dataset['description'].str.replace(r'https?://t\.co/\S+', '')
 
-dataset['description'] = dataset['description'].str.replace(r"(@)(\w+)\b", 
-       "")
+dataset['description'] = dataset['description'].str.replace(r"(@)(\w+)\b", "")
 
-# Separate hash tags into separate column
-dataset['description'] = dataset['description'].str.replace(r"(#)(\w+)\b", 
-        "HASHTAG")
+dataset['description'] = dataset['description'].str.replace(r"(#)(\w+)\b", "")
+
 dataset['description'] = dataset['description'].fillna("Not Available")
+
 # Removing gibberish as well as some special characters form text
-dataset['description'] = dataset['description'].str.replace(
-        r'[^A-Za-z0-9,.\'-_? ]+', '')
+dataset['description'] = dataset['description'].str.replace(r'[^A-Za-z0-9,.\'-_? ]+', '')
 
 
 #Split data into training and test sets
