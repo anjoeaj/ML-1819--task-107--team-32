@@ -25,7 +25,7 @@ Y = np.ravel(Y)
 
 # instantiate a logistic regression model, and fit with training data for X and y
 model = LogisticRegression()
-model = model.fit(X_train, Y_train)
+model = model.fit(X, Y)
 
 # check the accuracy on the training set
 print(model.score(X, Y))
@@ -33,5 +33,5 @@ print(model.score(X, Y))
 print(Y.mean())
 
 # Test model on test data
-Y_pred = model.predict(X_test)
-print(model.score(X_test, Y_test))
+Y_pred = model.predict(X)
+print(model.score(X, Y))
