@@ -154,19 +154,6 @@ dataset['description'] = dataset['description'].str.replace("[^a-zA-Z#]", " ")
 
 dataset['description'] = dataset['description'].apply(lambda x: ' '.join([w for w in x.split() if len(w) > 2]))
 
-"""""
-
-# Tokenize description
-
-tokenized_desc = dataset['description'].apply(lambda x: x.split())
-
-for i in range(len(tokenized_desc)):
-
-    tokenized_desc[i] = ' '.join(tokenized_desc[i])
-
-dataset['description'] = tokenized_desc
-
-"""
 
 #dataset['description'] = dataset['description'].apply(lambda x: [lemmatize_sentence(i) for i in x])
 print(dataset['description'][1:5])
