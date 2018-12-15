@@ -16,7 +16,7 @@ import nltk
 from nltk.corpus import wordnet
 from nltk.stem import WordNetLemmatizer
 
-nltk.download()
+#nltk.download()
 
 
 lemmatizer = WordNetLemmatizer()
@@ -49,9 +49,6 @@ def lemmatize_sentence(sentence):
         else:
             res_words.append(lemmatizer.lemmatize(word, tag))
     return " ".join(res_words)
-
-
-# lower-case letter
 
 
 # Importing the dataset
@@ -129,16 +126,17 @@ print(dataset['description'][1:5])
 
 # print(dataset['description'][1:2])
 
-from wordcloud import WordCloud
-wordcloud = WordCloud(width=800, height=500, random_state=21, max_font_size=110).generate(dataset['text'])
+# Word cloud for dataset columns
+"""from wordcloud import WordCloud
+all_words = ' '.join([text for text in dataset['hashtags']])
+wordcloud = WordCloud(width=800, height=500, random_state=21, max_font_size=110).generate(all_words)
 
 plt.figure(figsize=(10, 7))
 plt.imshow(wordcloud, interpolation="bilinear")
 plt.axis('off')
-plt.show()
+plt.show()"""
 
 # Split data into training and test sets
-
 train, test = train_test_split(dataset, test_size=0.25, random_state=0)
 
 # Save as csv file
