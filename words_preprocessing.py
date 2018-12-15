@@ -10,12 +10,12 @@ Created on Sat Nov 17 23:46:29 2018
 
 import pandas as pd
 from sklearn.model_selection import train_test_split
-from matplotlib import pyplot as plt
+from matplotlib import pyplot as plt # (for wordcloud)
 
 import nltk
 from nltk.corpus import wordnet
 from nltk.stem import WordNetLemmatizer
-
+import seaborn as sns # For barcharts (not used right now)
 #nltk.download()
 
 
@@ -90,9 +90,9 @@ dataset['text'] = dataset['text'].str.replace("[^a-zA-Z#]", " ")
 # Remove words with less than 3 letters - likely no significance       
 dataset['text'] = dataset['text'].apply(lambda x: ' '.join([w for w in x.split() if len(w)>2]))
 
-print(dataset['text'][1:4])
+#print(dataset['text'][1:4])
 dataset['text'] = dataset['text'].apply(lemmatize_sentence)
-print(dataset['text'][1:4])
+#print(dataset['text'][1:4])
 # Tokenize tweet
 
 # - - - - - Cleaning hashtag column - - - - -
@@ -101,6 +101,9 @@ hashtags = hashtags.fillna("")
 for i in range(len(hashtags)):
     hashtags[i] = ' '.join(hashtags[i])
 dataset['hashtags'] = hashtags
+#print(dataset['hashtags'][1:4])
+dataset['hashtags'] = dataset['hashtags'].apply(lemmatize_sentence)
+#print(dataset['hashtags'][1:4])
 
 
 # - - - - - Cleaning description column (same as above) - - - - -
@@ -120,9 +123,9 @@ dataset['description'] = dataset['description'].apply(lambda x: ' '.join([w for 
 
 
 #dataset['description'] = dataset['description'].apply(lambda x: [lemmatize_sentence(i) for i in x])
-print(dataset['description'][1:5])
+#print(dataset['description'][1:5])
 dataset['description'] = dataset['description'].apply(lemmatize_sentence)
-print(dataset['description'][1:5])
+#print(dataset['description'][1:5])
 
 # print(dataset['description'][1:2])
 
