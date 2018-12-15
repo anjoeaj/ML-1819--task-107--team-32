@@ -157,6 +157,6 @@ train, test = train_test_split(dataset, test_size=0.25, random_state=0)
 
 # Save as csv file
 
-dataset.to_csv("words_training_dataset.csv", ",")
-dataset.to_csv("words_testing_dataset.csv", ",")
-dataset.to_csv("words_crossval_dataset.csv", ",")
+train.to_csv("words_training_dataset.csv", ",")
+test.to_csv("words_testing_dataset.csv", ",")
+dataset.to_csv("processed_dataset.csv", ",")
