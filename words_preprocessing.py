@@ -70,7 +70,7 @@ print(count)
 dataset['gender'] = dataset['gender'].map({'female': 1, 'male': 0})
 
 dataset['description'] = dataset['description'].fillna("")
-# combining words
+# combine text + desc
 dataset['text'] = dataset['text'] + " " + dataset["description"]
 
 dataset = dataset[['gender', 'text']]
