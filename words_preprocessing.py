@@ -5,6 +5,7 @@ Created on Sat Nov 17 23:46:29 2018
 @author: gargav
 """
 
+# from gensim.models import KeyedVectors
 
 
 import pandas as pd
@@ -53,7 +54,6 @@ def lemmatize_sentence(sentence):
 
 # Importing the dataset
 dataset = pd.read_csv('twitter.csv', encoding="ISO-8859-1")
-dataset = dataset[['gender', 'description', 'text']]
 
 # Gender data contains: male, female, unknown, brand
 
@@ -70,7 +70,10 @@ print(count)
 dataset['gender'] = dataset['gender'].map({'female': 1, 'male': 0})
 
 dataset['description'] = dataset['description'].fillna("")
+# combining words
 dataset['text'] = dataset['text'] + " " + dataset["description"]
+
+dataset = dataset[['gender', 'text']]
 
 #  - - - - - Cleaning text column - - - - -
 dataset['text'] = dataset['text'].str.lower()
@@ -94,11 +97,4 @@ print(dataset['text'][1:4])
 dataset['text'] = dataset['text'].apply(lemmatize_sentence)
 print(dataset['text'][1:4])
 
-# Split data into training and test sets
-train, test = train_test_split(dataset, test_size=0.25, random_state=0)
-
-# Save as csv file
-
-train.to_csv("words_training_dataset.csv", ",")
-test.to_csv("words_testing_dataset.csv", ",")
 dataset.to_csv("words_dataset.csv", ",")
