@@ -5,7 +5,6 @@ Created on Sat Nov 17 23:46:29 2018
 @author: gargav
 """
 
-# from gensim.models import KeyedVectors
 
 
 import pandas as pd
