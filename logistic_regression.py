@@ -9,16 +9,14 @@ from sklearn.model_selection import cross_val_score
 # NOW USING A TRAIN DATA SET AND TEST DATA SET
 
 #Read twitter data 
-dta = pd.read_csv("ML-1819--task-107--team-32_cleanedUpData.csv", ',')
+dta = pd.read_csv("words_dataset.csv", ',')
 
 #Split columns to X and Y
 Y = dta.iloc[:,1]
 X = dta.iloc[:, 2:-1]
 
 #sReformat data
-Y, X = dmatrices('gender ~ created + fav_number + tweet_count + descLen + des_hashtag_count + nameLen + tweet_length + '
-                'num_tagged + tweet_hashtags + C(has_mentioned_other_bio) + C(uses_default_link_color) + '
-                'C(tweet_has_link)', dta, return_type="dataframe")
+Y, X = dmatrices('gender ~ text', dta, return_type="dataframe")
 
 Y = np.ravel(Y)
 
