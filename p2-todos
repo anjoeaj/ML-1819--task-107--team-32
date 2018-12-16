@@ -1,8 +1,8 @@
 tokenize 
 remove ing
 analytics vidhya - generate word cloud - https://www.analyticsvidhya.com/blog/2018/07/hands-on-sentiment-analysis-dataset-python/
-tf-idf
-
+tf-id
+we can combine the description and text, as we are not using the sequential model
 
 
 
