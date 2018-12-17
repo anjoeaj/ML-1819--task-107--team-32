@@ -146,11 +146,10 @@ dataset = dataset.drop(columns="name")
 dataset = dataset.drop(columns="text")
 dataset = dataset.drop(columns="shortened_urls")
 dataset = dataset.drop(columns="shared_link")
+dataset = dataset.drop(columns="gender")
 
 #Split data into training and test sets
 train, test = train_test_split(dataset, test_size = 0.25, random_state = 0)
 
 #Save as csv file
-train.to_csv("stats_training_dataset.csv", ",")
-test.to_csv("stats_testing_dataset.csv", ",")
-dataset.to_csv("stats_crossval_dataset.csv", ",")
+dataset.to_csv("stats_dataset.csv", ",")
