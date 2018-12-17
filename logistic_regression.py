@@ -53,7 +53,26 @@ print(gridsearch.best_params_)
 print(gridsearch.score)
 
 # Model
-model = LogisticRegression(C = 10, penalty = "l1" )
+model = LogisticRegression(C = 0.1, penalty = "l2" )
+model.fit(X_train, y_train) # training the model
+print(model.score(X_train, y_train))
+Y_pred = model.predict(X_test)
+print(model.score(X_test, y_test))
+
+
+########################## SVM TEST #############################
+#{'kernel':['rbf'], 'gamma': ['auto', 0.001, 0.01, 0.1, 0, 1, 10, 100, 1000], 'C': [0.01, 0.1, 1, 10, 100, 1000]},	
+#{'kernel':['sigmoid'], 'gamma': ['auto', 0.001, 0.01, 0.1, 0, 1, 10, 100, 1000], 'C': [ 0.01, 0.1, 1, 10, 100, 1000]},	
+#{'kernel':['poly'], 'gamma': ['auto', 0.001, 0.01, 0.1, 0, 1, 10, 100, 1000], 'C': [ 0.01, 0.1, 1, 10, 100, 1000], 'degree': [2, 3]}]	
+from sklearn import svm
+modelSVM = svm.SVC()	
+trim_parameter_list = [{'kernel':['linear'], 'C': [ 0.01, 0.1, 1, 10, 100, 1000]}]	
+gridsearch = model_selection.GridSearchCV(modelSVM, trim_parameter_list)	
+gridsearch.fit(X_train, y_train)	
+print(gridsearch.best_params_)	
+print(gridsearch.score)
+
+model = svm.SVC(C = 0.1, penalty = "l2" )
 model.fit(X_train, y_train) # training the model
 print(model.score(X_train, y_train))
 Y_pred = model.predict(X_test)
@@ -78,10 +97,10 @@ import matplotlib.pyplot as plt
 plt.title('Receiver Operating Characteristic')
 
 #plot test data ROC curve
-plt.plot(fpr, tpr, 'darkorange', label = 'AUC = %0.2f' % roc_auc)
+plt.plot(fpr, tpr, 'darkorange', label = 'Test AUC = %0.2f' % roc_auc)
 
 #plot training data ROC curve
-plt.plot(fpr1, tpr1, 'r', label = 'AUC = %0.2f' % roc_auc1)
+plt.plot(fpr1, tpr1, 'g', label = 'Train AUC = %0.2f' % roc_auc1)
 
 plt.legend(loc = 'lower right')
 plt.plot([0, 1], [0, 1],'r--',color='navy')
