@@ -1,2 +1,3 @@
 words_dataset.csv
 features_3000words.csv
+*.tmp
