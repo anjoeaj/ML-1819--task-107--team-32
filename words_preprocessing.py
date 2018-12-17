@@ -9,14 +9,10 @@ Created on Sat Nov 17 23:46:29 2018
 
 
 import pandas as pd
-from sklearn.model_selection import train_test_split
-from sklearn.feature_extraction.text import CountVectorizer
-from matplotlib import pyplot as plt  # (for wordcloud)
 
 import nltk
 from nltk.corpus import wordnet
 from nltk.stem import WordNetLemmatizer
-import seaborn as sns  # For barcharts (not used right now)
 
 # nltk.download()
 
@@ -56,7 +52,6 @@ def lemmatize_sentence(sentence):
 dataset = pd.read_csv('twitter.csv', encoding="ISO-8859-1")
 
 # Gender data contains: male, female, unknown, brand
-
 # Remove brand and unknown rows
 valid = ["male", "female"]
 dataset = dataset[dataset['gender'].isin(valid)]

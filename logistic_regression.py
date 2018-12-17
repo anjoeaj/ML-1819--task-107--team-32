@@ -17,10 +17,10 @@ from sklearn.metrics import roc_curve, auc
 dataset = pd.read_csv("words_dataset.csv", ',')
 
 #max word count
-maxWordCount = 1000
+maxWordCount = 500
 
 #Import statistical features
-dataset2 = pd.read_csv("stats_crossval_dataset.csv", ',')
+dataset2 = pd.read_csv("stats_dataset.csv", ',')
 features = dataset2[['fav_number', 'tweet_count', 'created', 'descLen', 'nameLen']]
 
 # Separate Y column
