@@ -64,10 +64,7 @@ print(y_train.mean())
 Y_pred = model.predict(X_test)
 print(model.score(X_test, y_test))
 
-from sklearn.metrics import confusion_matrix
-tn, fp, fn, tp = confusion_matrix([0, 1, 0, 1], [1, 1, 1, 1]).ravel()
-(tn, fp, fn, tp)
-(0, 2, 1, 1)
+
 
 
 
@@ -126,3 +123,8 @@ plt.ylabel('True Positive Rate')
 plt.title('Receiver operating characteristic example')
 plt.legend(loc="lower right")
 plt.show()
+
+from sklearn.metrics import confusion_matrix
+tn, fp, fn, tp = confusion_matrix([0, 1, 0, 1], [1, 1, 1, 1]).ravel()
+(tn, fp, fn, tp)
+(0, 2, 1, 1)
