@@ -1,70 +1,68 @@
-from sklearn.linear_model import LogisticRegression
+# -*- coding: utf-8 -*-
+"""
+Logistic Regression
+"""
+
 import numpy as np
 import pandas as pd
-from patsy import dmatrices
-from sklearn.model_selection import train_test_split
-from sklearn import metrics
-from sklearn.model_selection import cross_val_score
-
-from sklearn.model_selection import train_test_split
 from sklearn.feature_extraction.text import CountVectorizer
-import nltk
-from nltk.corpus import wordnet
-from nltk.stem import WordNetLemmatizer
-import seaborn as sns # For barcharts (not used right now)
-
-
-import numpy as np
-import matplotlib.pyplot as plt
-from itertools import cycle
-
-from sklearn import svm, datasets
-from sklearn.metrics import roc_curve, auc
 from sklearn.model_selection import train_test_split
-from sklearn.preprocessing import label_binarize
-from sklearn.multiclass import OneVsRestClassifier
-from scipy import interp
-#nltk.download()
+from sklearn.linear_model import LogisticRegression
+from sklearn import model_selection
 
-lemmatizer = WordNetLemmatizer()
+from sklearn import metrics
+from sklearn.metrics import roc_curve, auc
 
-# NOW USING A TRAIN DATA SET AND TEST DATA SET
+#Import processed text
+dataset = pd.read_csv("words_dataset.csv", ',')
 
-#Read twitter data 
-dta = pd.read_csv("words_dataset.csv", ',')
+#Import statistical features
+dataset2 = pd.read_csv("stats_crossval_dataset.csv", ',')
+features = dataset2[['fav_number', 'tweet_count', 'created', 'descLen', 'nameLen']]
 
-#bow_vectorizer2 = CountVectorizer(max_df=0.90, min_df=2, max_features=200, stop_words='english')
-#bow_hashtags = bow_vectorizer2.fit_transform(dta["text"])
-#for i in range(len(dta)):
-#    dta["text"][i] = bow_hashtags[i].toarray()
+# Separate Y column
+gender = dataset['gender']
+y_train, y_test = train_test_split(gender, test_size = 0.25, random_state = 0)
+y_train = np.ravel(y_train)
+y_test = np.ravel(y_test)
 
-#Split columns to X and Y
-Y = dta.iloc[:,1]
-X = dta.iloc[:, 2:-1]
-n_classes = Y.shape[0]
-#sReformat data
-Y, X = dmatrices('gender ~ created + fav_number + tweet_count + descLen + nameLen', dta, return_type="dataframe")
-X_train, X_test, y_train, y_test = train_test_split(X, Y, test_size=.3,
-                                                    random_state=0)
-Y = np.ravel(Y)
+# Bag of Words parameters
+bow_vectorizer_text = CountVectorizer(max_df = 0.90, min_df = 2, max_features = 100, stop_words='english')
 
+# Bag of Words object
+bow_text = bow_vectorizer_text.fit_transform(dataset["text"])
+for i in range(100): 
+    features.loc[:, i] = np.zeros(12894)
 
-# instantiate a logistic regression model, and fit with training data for X and y
-#model = LogisticRegression()
-model = OneVsRestClassifier(LogisticRegression())
-model = model.fit(X_train, y_train)
-#y_score = model.fit(X_train, y_train).decision_function(X_test)
+for i in range(100): 
+    for j in range(12894):
+        features.loc[j][i+5] = bow_text[j, i]
 
-# check the accuracy on the training set
+#X_train = bow_text[:12894, :]
+X_train, X_test = train_test_split(features, test_size = 0.25, random_state = 0)
+
+# GridSearch
+gridModel = LogisticRegression()
+trim_parameter_list = [{'C': [0.01, 0.1, 1, 10, 100, 1000], "penalty":["l1","l2"]}]
+gridsearch = model_selection.GridSearchCV(gridModel, trim_parameter_list)
+gridsearch.fit(X_train, y_train)
+print(gridsearch.best_params_)
+print(gridsearch.score)
+
+# Model
+model = LogisticRegression(C = 10, penalty = "l1" )
+model.fit(X_train, y_train) # training the model
 print(model.score(X_train, y_train))
-
-print(y_train.mean())
-
-# Test model on test data
 Y_pred = model.predict(X_test)
 print(model.score(X_test, y_test))
 
 ######################### PLOT ROC CURVE ###############################
+
+# Plot the graph for test data
+probs = model.predict_proba(X_train)
+preds = probs[:,1]
+fpr1, tpr1, threshold = metrics.roc_curve(y_train, preds)
+roc_auc1 = metrics.auc(fpr1, tpr1)
 
 #Get the true positives and false positives 
 probs = model.predict_proba(X_test)
@@ -75,7 +73,13 @@ roc_auc = metrics.auc(fpr, tpr)
 # draw the graph 
 import matplotlib.pyplot as plt
 plt.title('Receiver Operating Characteristic')
+
+#plot test data ROC curve
 plt.plot(fpr, tpr, 'darkorange', label = 'AUC = %0.2f' % roc_auc)
+
+#plot training data ROC curve
+plt.plot(fpr1, tpr1, 'darkorange', label = 'AUC = %0.2f' % roc_auc1)
+
 plt.legend(loc = 'lower right')
 plt.plot([0, 1], [0, 1],'r--',color='navy')
 plt.xlim([0, 1])
@@ -89,7 +93,4 @@ plt.show()
 
 
 
-from sklearn.metrics import confusion_matrix
-tn, fp, fn, tp = confusion_matrix([0, 1, 0, 1], [1, 1, 1, 1]).ravel()
-(tn, fp, fn, tp)
-(0, 2, 1, 1)
+
