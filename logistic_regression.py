@@ -16,6 +16,9 @@ from sklearn.metrics import roc_curve, auc
 #Import processed text
 dataset = pd.read_csv("words_dataset.csv", ',')
 
+#max word count
+maxWordCount = 1000
+
 #Import statistical features
 dataset2 = pd.read_csv("stats_crossval_dataset.csv", ',')
 features = dataset2[['fav_number', 'tweet_count', 'created', 'descLen', 'nameLen']]
@@ -27,14 +30,14 @@ y_train = np.ravel(y_train)
 y_test = np.ravel(y_test)
 
 # Bag of Words parameters
-bow_vectorizer_text = CountVectorizer(max_df = 0.90, min_df = 2, max_features = 100, stop_words='english')
+bow_vectorizer_text = CountVectorizer(max_df = 0.90, min_df = 2, max_features = maxWordCount, stop_words='english')
 
 # Bag of Words object
 bow_text = bow_vectorizer_text.fit_transform(dataset["text"])
-for i in range(100): 
+for i in range(maxWordCount): 
     features.loc[:, i] = np.zeros(12894)
 
-for i in range(100): 
+for i in range(maxWordCount): 
     for j in range(12894):
         features.loc[j][i+5] = bow_text[j, i]
 
@@ -78,7 +81,7 @@ plt.title('Receiver Operating Characteristic')
 plt.plot(fpr, tpr, 'darkorange', label = 'AUC = %0.2f' % roc_auc)
 
 #plot training data ROC curve
-plt.plot(fpr1, tpr1, 'darkorange', label = 'AUC = %0.2f' % roc_auc1)
+plt.plot(fpr1, tpr1, 'r', label = 'AUC = %0.2f' % roc_auc1)
 
 plt.legend(loc = 'lower right')
 plt.plot([0, 1], [0, 1],'r--',color='navy')
