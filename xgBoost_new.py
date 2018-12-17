@@ -1,3 +1,10 @@
+# -*- coding: utf-8 -*-
+"""
+Created on Mon Dec 17 19:47:43 2018
+
+@author: gargav
+"""
+
 import pandas as pd
 import numpy as np
 from sklearn.feature_extraction.text import CountVectorizer
@@ -6,20 +13,19 @@ from sklearn.model_selection import train_test_split
 from sklearn.model_selection import RandomizedSearchCV
 from sklearn.model_selection import StratifiedKFold
 from sklearn.metrics import accuracy_score
+from sklearn.preprocessing import LabelEncoder
 
 df = pd.read_csv("words_dataset.csv")
 
-X_train, X_test, y_train, y_test = train_test_split(df['text'], df['gender'],
-                                                    test_size=0.25)
-
-# setting up countvectorizer
+# setting up count vectorizer
 vectorizer = CountVectorizer(stop_words='english', max_df=0.9, min_df=2,
                              max_features=3000)
-vectorized_X = vectorizer.fit_transform(X_train)
+x = vectorizer.fit_transform(df['text'])
 
-print(vectorized_X.toarray())
+encoder = LabelEncoder()
+y = encoder.fit_transform(df['gender'])
 
-vectorized_X_test = vectorizer.fit_transform(X_test)
+X_train, X_test, y_train, y_test = train_test_split(x, y, test_size=0.25)
 
 params = {
 
@@ -63,18 +69,16 @@ skf = StratifiedKFold(n_splits=folds, shuffle=True, random_state=1001)
 
 random_search = RandomizedSearchCV(clf, params, n_iter=param_comb,
                                    scoring='roc_auc', n_jobs=4,
-                                   cv=skf.split(vectorized_X, y_train),
+                                   cv=skf.split(X_train, y_train),
                                    verbose=3, random_state=1001)
 
-random_search.fit(vectorized_X, y_train)
+random_search.fit(X_train, y_train)
 
 print(random_search.best_estimator_)
 print(random_search.best_score_)
 
-ypred = random_search.predict(vectorized_X_test)
+ypred = random_search.predict(X_test)
 
 print(accuracy_score(y_test, ypred))
-
-
 
 

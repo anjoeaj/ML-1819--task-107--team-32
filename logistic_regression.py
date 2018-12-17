@@ -13,7 +13,7 @@ from sklearn import metrics
 from sklearn.metrics import roc_curve, auc
 
 #Import statistical features
-dataset = pd.read_csv("features.csv", ',')
+dataset = pd.read_csv("features_3000words.csv", ',')
 
 # Separate Y column
 gender = dataset['gender']
@@ -27,7 +27,7 @@ X_train, X_test = train_test_split(features, test_size = 0.25, random_state = 0)
 
 # GridSearch
 gridModel = LogisticRegression()
-trim_parameter_listL1 = [{'C': [0.01, 0.1, 1, 10, 100, 1000], "penalty":["l1"], 'solver' : ['liblinear','saga'], 'max_iter': [250]}]
+trim_parameter_listL1 = [{'C': [0.1, 0.2, 0.3, 0.4, 0.5, 1], "penalty":["l1", "l2"], 'solver' : ['liblinear'], 'max_iter': [100]}]
 trim_parameter_listL2 = [{'C': [0.01, 0.1, 1, 10, 100, 1000], "penalty":["l2"], 'solver' : ['newton-cg','lbfgs','sag'], 'max_iter': [500]}]
 
 gridsearch = model_selection.GridSearchCV(gridModel, trim_parameter_listL1)
@@ -35,8 +35,8 @@ gridsearch.fit(X_train, y_train)
 print(gridsearch.best_params_)
 print(gridsearch.score)
 
-# Model
-model = LogisticRegression(C = 0.1, penalty = "l2", solver = ' ' )
+# Model (with best params)
+model = LogisticRegression(C = 0.2, penalty = "l2", solver = 'liblinear' , max_iter = 100)
 model.fit(X_train, y_train) # training the model
 print(model.score(X_train, y_train))
 Y_pred = model.predict(X_test)
@@ -55,7 +55,7 @@ gridsearch.fit(X_train, y_train)
 print(gridsearch.best_params_)	
 print(gridsearch.score)
 
-model = svm.SVC(kernel = 'sigmoid', C = 0.1, gamma = 1000 )
+model = svm.SVC()
 model.fit(X_train, y_train) # training the model
 print(model.score(X_train, y_train))
 Y_pred = model.predict(X_test)
