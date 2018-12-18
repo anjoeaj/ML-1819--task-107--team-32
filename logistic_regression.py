@@ -102,13 +102,19 @@ plt.show()
 ######################### ROC CURVE END ###############################
 
 ######################### CONFUSION MATRIX ############################
+#y_test = pd.read_csv("P2/", ',')
+#predictions = pd.read_csv("features_3000words.csv", ',')
+
+
 import seaborn as sns
 # Convert predictions from 0,1 back to female, male
 y_test_string = ["" for x in range(len(y_test))]
 predictions_string = ["" for x in range(len(predictions))]
+#k = 0
 for i in range(len(y_test)):
     if(y_test[i]==0):
         y_test_string[i] = "Female"
+#        k = k + 1
     else:
         y_test_string[i] = "Male"
         
