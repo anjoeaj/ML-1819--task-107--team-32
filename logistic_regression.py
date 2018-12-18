@@ -35,13 +35,19 @@ gridsearch.fit(X_train, y_train)
 print(gridsearch.best_params_)
 print(gridsearch.score)
 
-# Model (with best params)
+# Model_best params
 model = LogisticRegression(C = 0.2, penalty = "l2", solver = 'liblinear' , max_iter = 100)
 model.fit(X_train, y_train) # training the model
 print(model.score(X_train, y_train))
-Y_pred = model.predict(X_test)
-print(model.score(X_test, y_test))
+predictions = model.predict(X_test)
+score = model.score(X_test, y_test)
+print(score)
 
+"""from sklearn.linear_model import LogisticRegressionCV
+clf = LogisticRegressionCV(cv=3,Cs=2, random_state=0,multi_class='ovr', solver='liblinear', penalty='l2', max_iter= 500).fit(X_train, y_train)
+print(clf.score(X_train, y_train))
+Y_pred = clf.predict(X_test)
+print(clf.score(X_test, y_test))"""
 
 ########################## SVM TEST #############################
 #{'kernel':['rbf'], 'gamma': ['auto', 0.001, 0.01, 0.1, 0, 1, 10, 100, 1000], 'C': [0.01, 0.1, 1, 10, 100, 1000]},	
@@ -95,3 +101,31 @@ plt.show()
 
 ######################### ROC CURVE END ###############################
 
+######################### CONFUSION MATRIX ############################
+import seaborn as sns
+# Convert predictions from 0,1 back to female, male
+y_test_string = ["" for x in range(len(y_test))]
+predictions_string = ["" for x in range(len(predictions))]
+for i in range(len(y_test)):
+    if(y_test[i]==0):
+        y_test_string[i] = "Female"
+    else:
+        y_test_string[i] = "Male"
+        
+    if(predictions[i]==0):
+        predictions_string[i] = "Female"
+    else:
+        predictions_string[i] = "Male"
+        
+gender_labels = ["Female","Male"]
+confMat = metrics.confusion_matrix(y_test_string, predictions_string)
+print(confMat)
+plt.figure(figsize=(12,12))
+sns.heatmap(confMat, annot=True, fmt=".3f", linewidths=.5, square = True, cmap = 'Blues_r');
+tick_position = [0.5, 1.5]
+plt.xticks(tick_position, gender_labels)
+plt.yticks(tick_position, gender_labels, va = 'center')
+plt.ylabel('Ground Truth');
+plt.xlabel('Predicted label');
+all_sample_title = 'Accuracy Score: {:.3f}'.format(score)
+plt.title(all_sample_title, size = 15);
