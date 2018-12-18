@@ -17,13 +17,12 @@ from sklearn.preprocessing import LabelEncoder
 from xgboost import plot_tree
 import graphviz
 import matplotlib.pyplot as plt
+from sklearn.feature_extraction.text import TfidfVectorizer, CountVectorizer
 
-df = pd.read_csv("words_dataset.csv")
+df = pd.read_csv("features_3000words.csv")
 
 # setting up count vectorizer
-vectorizer = CountVectorizer(stop_words='english', max_df=0.9, min_df=2,
-                             max_features=3000)
-x = vectorizer.fit_transform(df['text'])
+x = df.iloc[:, df.columns != 'gender']
 
 encoder = LabelEncoder()
 y = encoder.fit_transform(df['gender'])
@@ -61,7 +60,7 @@ booster = xgb.train(params, data_dmatrix)
 
 dtest = xgb.DMatrix(vectorized_X_test.toarray())
 """
-
+# Disclaimer!!!!! If you are gonna test it, it gonna take you a very long time (50 mins approx.)
 clf = xgb.XGBClassifier(learning_rate=0.01, n_estimators=600,
                         objective='binary:logistic', silent=True, nthread=1)
 
@@ -127,3 +126,5 @@ plt.xlabel('False Positive Rate')
 plt.show()
 
 ######################### ROC CURVE END ###############################
+
+
