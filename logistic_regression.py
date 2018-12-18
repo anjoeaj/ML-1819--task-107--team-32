@@ -121,11 +121,11 @@ gender_labels = ["Female","Male"]
 confMat = metrics.confusion_matrix(y_test_string, predictions_string)
 print(confMat)
 plt.figure(figsize=(12,12))
-sns.heatmap(confMat, annot=True, fmt=".3f", linewidths=.5, square = True, cmap = 'Blues_r');
+sns.heatmap(confMat, annot=True, fmt=".0f", linewidths=.5, square = True, cmap = 'Blues_r', annot_kws={"size":22});
 tick_position = [0.5, 1.5]
-plt.xticks(tick_position, gender_labels)
-plt.yticks(tick_position, gender_labels, va = 'center')
-plt.ylabel('Ground Truth');
-plt.xlabel('Predicted label');
+plt.xticks(tick_position, gender_labels, size = 20, fontweight = 'bold' )
+plt.yticks(tick_position, gender_labels, size = 20 , va = 'center', fontweight = 'bold' )
+plt.ylabel('Actual Gender', size = 20 );
+plt.xlabel('Predicted Gender', size = 20 );
 all_sample_title = 'Accuracy Score: {:.3f}'.format(score)
-plt.title(all_sample_title, size = 15);
+plt.title(all_sample_title, size = 18);
